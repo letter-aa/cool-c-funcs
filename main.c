@@ -47,14 +47,22 @@ int stoi(char * c){
     bool isNum = true;
     bool isPos = false;
     bool isNeg = false;
+    bool isZero = false;
+    bool numPosFound = false;
     for (int i = 0; i < strlen(c) && c[i] != '\0'; i++){
         for (int x = 0; x < sizeof(num) / sizeof(char); x++){
             if (c[i] != num[x]){
                 if (x == sizeof(num) / sizeof(char) - 1){
                     if (c[i] == '-'){
+                        if (numPosFound == true){
+                            isZero = true;
+                        }
                         isNeg = true;
-                        isPos = false;
                     } else if (c[i] == '+'){
+                        if (numPosFound == true){
+                            isZero = true;
+                        }
+                        isPos = true;
                         break;
                     } else {
                         isNum = false;
@@ -62,6 +70,7 @@ int stoi(char * c){
                     }
                 }
             } else {
+                numPosFound = true;
                 int ex = c[i] - '0';
                 if (((res * 10) + ex) > INT_MAX){
                     res = INT_MAX;
@@ -82,11 +91,14 @@ int stoi(char * c){
     if (isNeg == true){
         res = res * -1;
     }
+    if (isZero == true || (isNeg == true && isPos == true)){
+        res = 0;
+    }
     return res;
 }
 
 int main()
 {
-    printf("%d", stoi("23847192384719238471923871324"));
+    printf("%d", stoi("-12"));
     return 0;
 }
