@@ -11,7 +11,7 @@ int find(char* main, char* find);
 int find_last_of(char* main, char* find);
 int find_first_not_of(char* main, char* find);
 int find_last_not_of(char* main, char* find);
-char* split(char* main, char* splitBy);
+char** split(char* main, char* splitBy);
 char* oldTrim(char* main);
 char* trim(char* main);
 char* itos(int i);
