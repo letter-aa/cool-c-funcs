@@ -28,17 +28,18 @@ char* substr(char* main, int start, int length) {
     }
     else {
         char* res = malloc(strlen(main) * sizeof(char*));
-        for (int i = start; i <= strlen(main) - start; i++) {
+        for (int i = start; i <= strlen(main); i++) {
             res[i - start] = main[i];
         }
         res[strlen(res)] = '\0';
         return res;
     }
 }
-int find(char* main, char* findStr) {
-    for (int i = 0; i < strlen(main); i++) {
-        if (strcmp(substr(main, i, strlen(findStr)), findStr) == 0) {
-            return i;
+int find(char* main, char* findStr, int nth) {
+    char* mainEx = substr(main, nth, -1);
+    for (int i = 0; i < strlen(mainEx); i++) {
+        if (strcmp(substr(mainEx, i, strlen(findStr)), findStr) == 0) {
+            return i + nth;
         }
     }
     return -1;
@@ -55,7 +56,7 @@ int numofstr(char* main, char* lookfor) {
     char** res = splitByByte(main, strlen(lookfor));
     int inc = 0;
     for (int i = 0; i < ARRLEN(res); i++) {
-        if (strcmp(res[i], lookfor)) {
+        if (strcmp(res[i], lookfor) == 0) {
             inc = inc + 1;
         }
     }
@@ -65,7 +66,7 @@ int find_last_of(char* main, char* findStr) {
     char* rmain = reverse(main);
     char* rfind = reverse(findStr);
     if (numofstr(rmain, rfind) > 0) {
-        return strlen(main) - find(rmain, rfind) - 1;
+        return strlen(main) - find(rmain, rfind,0) - 1;
     }
     return -1;
 }
@@ -90,8 +91,28 @@ int find_last_not_of(char* main, char* findStr) {
         return -1;
     }
 }
-char* split(char* main, char* splitBy) {
-    char* res[] = malloc(strlen(main) * sizeof(char*));
+char** split(char* main, char* splitBy) {
+    char** res = malloc(strlen(main) * sizeof(char*));
+    if (numofstr(main, splitBy) > 0) {
+        int inc = find(main, splitBy, 0);
+        res[0] = substr(main, 0, inc);
+        for (int i = 1; i < numofstr(main, splitBy) + 1; i++) {
+            int incEx = find(main, splitBy, inc + strlen(splitBy));
+            if (incEx != -1) {
+                res[i] = substr(main, inc + strlen(splitBy), incEx - inc);
+                inc = incEx;
+            }
+            else {
+                res[i] = substr(main, inc, strlen(splitBy));
+                strcat(res[i], substr(main, inc + strlen(splitBy), -1));
+                break;
+            }
+        }
+    }
+    else {
+        res[0] = main;
+    }
+    return res;
 }
 char* oldTrim(char* main) {
     int start = 0;
