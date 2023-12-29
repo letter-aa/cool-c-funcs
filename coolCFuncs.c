@@ -93,13 +93,14 @@ char** split(char* main, char* splitBy, int* sizeOfResult) {
     int j = 0;
     int inc = find(main, splitBy);
     int incEx = -1;
-    while (inc != -1) {
-        if (strcmp(splitBy, "") != 0) {
+    if (strcmp(splitBy, "") != 0) {
+        while (inc != -1) {
             if (incEx == -1 && j == 0) {
                 res[j] = substrEx(main, 0, inc);
             }
             else if (incEx == -1 && j != 0) {
                 res[j] = substr(main, inc + strlen(splitBy));
+                j = j + 1;
                 break;
             }
             else {
@@ -109,14 +110,11 @@ char** split(char* main, char* splitBy, int* sizeOfResult) {
             j = j + 1;
             incEx = findNth(main, splitBy, inc + 1);
         }
-        else {
-            if (j + 1 <= strlen(main)) {
-                res[j] = substrEx(main, j, 1);
-                j = j + 1;
-            }
-            else {
-                break;
-            }
+    }
+    else {
+        while (j + 1 <= strlen(main)) {
+            res[j] = substrEx(main, j, 1);
+            j = j + 1;
         }
     }
     *sizeOfResult = j;
