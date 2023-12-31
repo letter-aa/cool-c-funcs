@@ -8,7 +8,7 @@
 
 typedef long long ll;
 
-int* sort(int* array, int arrayLen, int* lpRetSize) {
+int* sort(int* array, int arrayLen, int* sizeOfResult) {
     int* arr = array;
     int* res = malloc(arrayLen * sizeof(int));
     int ex1 = -1;
@@ -34,11 +34,11 @@ int* sort(int* array, int arrayLen, int* lpRetSize) {
                 }
             }
         }
-
+        
         //subtract arrayLen so when we have scanned all numbers arrayLen will = 0 and while loop will end
         arrayLen--;
     }
-    *lpRetSize = j;
+    *sizeOfResult = j;
     return res;
 }
 
