@@ -1,4 +1,5 @@
 /*
+sort
 reverse
 substr
 substrEx
@@ -23,7 +24,12 @@ stoi
 int main() {
     char mainStr[] = "example example example";
     char findStr[] = "example";
-
+    int sortTable[] = {55,1,2,9,3,0,1,3,3,4};
+    int sizeOfResult = 0;
+    int* sortTableRes = sort(sortTable, ARRLEN(sortTable), &sizeOfResult);
+    for (int i = 0; i < sizeOfResult; i++){
+        printf("sort[%d]: %d\n", i, sortTableRes[i]);
+    }
     printf("reverse: %s\n", reverse(mainStr));
     printf("substr: %s\n", substr(mainStr, 3));
     printf("substrEx: %s\n", substrEx(mainStr, 3, 7));
