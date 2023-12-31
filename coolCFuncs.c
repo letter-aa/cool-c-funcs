@@ -8,6 +8,40 @@
 
 typedef long long ll;
 
+int* sort(int* array, int arrayLen, int* lpRetSize) {
+    int* arr = array;
+    int* res = malloc(arrayLen * sizeof(int));
+    int ex1 = -1;
+    //int ex2 = -1;
+    int j = 0;
+    int f = 0;
+    while (arrayLen > 0) {
+        // set ex1 to -1 to set to arr[i]
+        int ex1 = -1;
+        for (int i = 0; i < arrayLen; i++) {
+            if (ex1 == -1 || arr[i] < ex1) {
+                ex1 = arr[i];
+            }
+        }
+        //first get j and set res[j] to ex1 then increment j
+        res[j++] = ex1;
+
+        //shorten arr table so we skip already scanned numbers
+        for (int i = 0; i < arrayLen; i++) { // go over arr table again to get ex1 position
+            if (arr[i] == ex1) {
+                for (int x = i; x < arrayLen - 1; x++) {
+                    arr[x] = arr[x + 1];
+                }
+            }
+        }
+
+        //subtract arrayLen so when we have scanned all numbers arrayLen will = 0 and while loop will end
+        arrayLen--;
+    }
+    *lpRetSize = j;
+    return res;
+}
+
 char* reverse(char* main) {
     char* res = malloc(strlen(main) * sizeof(char*));
     for (int i = 0; i <= strlen(main); i++) {
@@ -16,6 +50,7 @@ char* reverse(char* main) {
     res[strlen(main)] = '\0';
     return res;
 }
+
 char* substr(char* main, int start) {
     if (start < 0) {
         start = 0;
@@ -27,6 +62,7 @@ char* substr(char* main, int start) {
     res[strlen(res)] = '\0';
     return res;
 }
+
 char* substrEx(char* main, int start, int length) {
     if (start < 0) {
         start = 0;
@@ -49,6 +85,7 @@ char* substrEx(char* main, int start, int length) {
         return res;
     }
 }
+
 int find(char* main, char* findStr) {
     for (int i = 0; i < strlen(main); i++) {
         if (strcmp(substrEx(main, i, strlen(findStr)), findStr) == 0) {
@@ -57,6 +94,7 @@ int find(char* main, char* findStr) {
     }
     return -1;
 }
+
 int findNth(char* main, char* findStr, int nth) {
     char* mainEx = substr(main, nth);
     for (int i = 0; i < strlen(mainEx); i++) {
@@ -66,6 +104,7 @@ int findNth(char* main, char* findStr, int nth) {
     }
     return -1;
 }
+
 char** splitByByte(char* main, int splitBy, int* sizeOfResult) {
     int intEx = floor(splitBy);
     char** res = malloc(strlen(main) / intEx * sizeof(char*));
@@ -77,6 +116,7 @@ char** splitByByte(char* main, int splitBy, int* sizeOfResult) {
     *sizeOfResult = j;
     return res;
 }
+
 int numofstr(char* main, char* lookfor) {
     int sizeOfResult = 0;
     char** res = splitByByte(main, strlen(lookfor), &sizeOfResult);
@@ -88,6 +128,7 @@ int numofstr(char* main, char* lookfor) {
     }
     return inc;
 }
+
 char** split(char* main, char* splitBy, int* sizeOfResult) {
     char** res = malloc(strlen(main) * sizeof(char*));
     int j = 0;
@@ -120,6 +161,7 @@ char** split(char* main, char* splitBy, int* sizeOfResult) {
     *sizeOfResult = j;
     return res;
 }
+
 int find_last_of(char* main, char* findStr) {
     char* rmain = reverse(main);
     char* rfind = reverse(findStr);
@@ -128,6 +170,7 @@ int find_last_of(char* main, char* findStr) {
     }
     return -1;
 }
+
 int find_first_not_of(char* main, char* findStr) {
     if (strcmp(main, findStr) == 0) {
         return -1;
@@ -139,6 +182,7 @@ int find_first_not_of(char* main, char* findStr) {
     }
     return -1;
 }
+
 int find_last_not_of(char* main, char* findStr) {
     char* rmain = reverse(main);
     char* rfind = reverse(findStr);
@@ -149,6 +193,7 @@ int find_last_not_of(char* main, char* findStr) {
         return -1;
     }
 }
+
 char* oldTrim(char* main) {
     int start = 0;
     int len = strlen(main) - 1;
