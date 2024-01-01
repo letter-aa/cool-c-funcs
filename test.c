@@ -22,6 +22,15 @@ stoi
 #include "coolCFuncs.h"
 
 int main() {
+#ifdef _WIN32
+    any d[] = { "abc", 1, 'd' };
+    printf("any[0]: %s\nany[1]: %d\nany[2]: %c\n", d[0], d[1], d[2]);
+
+    any str1 = "bruh";
+    any chr1 = 'b';
+    any num1 = 1;
+    printf("%s, %c, %d\n", str1, chr1, num1);
+#endif
     char mainStr[] = "example example example";
     char findStr[] = "example";
     int sortTable[] = { 55,1,2,9,3,0,1,3,3,4 };
