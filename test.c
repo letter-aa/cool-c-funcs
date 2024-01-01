@@ -24,10 +24,10 @@ stoi
 int main() {
     char mainStr[] = "example example example";
     char findStr[] = "example";
-    int sortTable[] = {55,1,2,9,3,0,1,3,3,4};
+    int sortTable[] = { 55,1,2,9,3,0,1,3,3,4 };
     int sizeOfResult = 0;
     int* sortTableRes = sort(sortTable, ARRLEN(sortTable), &sizeOfResult);
-    for (int i = 0; i < sizeOfResult; i++){
+    for (int i = 0; i < sizeOfResult; i++) {
         printf("sort[%d]: %d\n", i, sortTableRes[i]);
     }
     printf("reverse: %s\n", reverse(mainStr));
@@ -36,7 +36,6 @@ int main() {
     printf("find: %d\n", find(mainStr, findStr));
     printf("findNth: %d\n", findNth(mainStr, findStr, 2));
 
-    int sizeOfResult = 0;
     char** splitResult = splitByByte(mainStr, 8, &sizeOfResult);
     for (int i = 0; i < sizeOfResult; i++) {
         printf("splitByByte[%d]: %s\n", i, splitResult[i]);
