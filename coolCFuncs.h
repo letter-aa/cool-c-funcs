@@ -8,6 +8,7 @@ typedef int(__cdecl* any)();
 #endif
 
 int* sort(int* array, int arrayLen, int* sizeOfResult);
+char* input();
 char* reverse(char* main);
 char* substr(char* main, int start);
 char* substrEx(char* main, int start, int length);
