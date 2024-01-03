@@ -42,6 +42,25 @@ int* sort(int* array, int arrayLen, int* sizeOfResult) {
     return res;
 }
 
+char* input() {
+    char* input;
+    input = (char*)malloc(sizeof(char));
+    char c = getchar();
+    int j = 0;
+    while (c != '\n') {
+        input = (char*)realloc(input, strlen(input) + 1);
+        if (input == NULL) {
+            printf("\n%s\n", "realloc failed lmao skill issue");
+            free(input);
+            return 1;
+        }
+        input[j++] = c;
+        c = getchar();
+    }
+    input[j] = '\0';
+    return input;
+}
+
 char* reverse(char* main) {
     char* res = malloc(strlen(main) * sizeof(char*));
     for (int i = 0; i <= strlen(main); i++) {
