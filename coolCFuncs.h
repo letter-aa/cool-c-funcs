@@ -7,8 +7,15 @@
 typedef int(__cdecl* any)();
 #endif
 
+typedef struct frequency {
+	int size;
+	char* characters;
+	int* frequencies;
+} frequency;
+
 int* sort(int* array, int arrayLen, int* sizeOfResult);
 char* input();
+frequency frequencies(char* string);
 char* reverse(char* main);
 char* substr(char* main, int start);
 char* substrEx(char* main, int start, int length);
