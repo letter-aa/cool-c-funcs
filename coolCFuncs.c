@@ -61,6 +61,44 @@ char* input() {
     return input;
 }
 
+frequency frequencies(char* string) {
+    int size = strlen(string); //size of input
+    int* freq = (int*)malloc(size * sizeof(int)); //num of frequencies
+    char* str = (char*)malloc(size * sizeof(char)); //characters associated with the number of frequencies in the freq array
+    int j = 0;
+    bool found = false;
+
+    for (int i = 0; i < size; i++) { //initialize both freq and str arrays
+        freq[i] = 0;
+        str[i] = 0;
+    }
+
+    for (int i = 0; i < size; i++) {
+        //go through each character in str array every character in ipt array to check if it is already an element in the str array
+        for (int x = 0; x < size; x++) {
+            if (string[i] == str[x]) {
+                freq[x]++;
+                found = true;
+                break;
+            }
+        }
+        //if character does not exist in str array, we will create it
+        if (!found) {
+            str[j] = string[i];
+            freq[j] = 1;
+            j++;
+        }
+        //reset found to false so that we can repeat this process for each character
+        found = false;
+    }
+    size = j;
+    frequency ret;
+    ret.characters = str;
+    ret.size = size;
+    ret.frequencies = freq;
+    return ret;
+};
+
 char* reverse(char* main) {
     char* res = malloc(strlen(main) * sizeof(char*));
     for (int i = 0; i <= strlen(main); i++) {
