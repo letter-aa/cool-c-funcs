@@ -60,12 +60,10 @@ int* sort(int* array, int arrayLen, int* sizeOfResult) {
     int* arr = array;
     int* res = malloc(arrayLen * sizeof(int*));
     int ex1 = -1;
-    //int ex2 = -1;
     int j = 0;
-    int f = 0;
     while (arrayLen > 0) {
         // set ex1 to -1 to set to arr[i]
-        int ex1 = -1;
+        ex1 = -1;
         for (int i = 0; i < arrayLen; i++) {
             if (ex1 == -1 || arr[i] < ex1) {
                 ex1 = arr[i];
@@ -146,6 +144,54 @@ frequency frequencies(char* string) {
     ret.frequencies = freq;
     return ret;
 };
+
+//sort function but for frequency
+frequency sortFrequency(frequency freq) {
+    int* freqs = freq.frequencies;
+    char* chars = freq.characters;
+    int arrayLen = freq.size;
+    int* res = malloc(arrayLen * sizeof(int*));
+    char* res1 = malloc(arrayLen * sizeof(char*));
+    int ex1 = -1;
+    char ex2 = 0;
+    int j = 0;
+    while (arrayLen > 0) {
+        // set ex1 to -1 to set to arr[i]
+        ex1 = -1;
+        for (int i = 0; i < arrayLen; i++) {
+            if (ex1 == -1 || freqs[i] < ex1) {
+                ex1 = freqs[i];
+                ex2 = chars[i];
+            }
+        }
+        //first get j and set res[j] to ex1 then increment j
+        res[j] = ex1;
+        res1[j++] = ex2;
+
+        //shorten arr table so we skip already scanned numbers
+        for (int i = 0; i < arrayLen; i++) { // go over arr table again to get ex1 position
+            if (freqs[i] == ex1) {
+                for (int x = i; x < arrayLen - 1; x++) {
+                    freqs[x] = freqs[x + 1];
+                }
+            }
+            if (chars[i] == ex2) {
+                for (int x = i; x < arrayLen - 1; x++) {
+                    chars[x] = chars[x + 1];
+                }
+            }
+        }
+
+        //subtract arrayLen so when we have scanned all numbers arrayLen will = 0 and while loop will end
+        arrayLen--;
+    }
+    //freq.size = j;
+    frequency ret;
+    ret.frequencies = res;
+    ret.size = freq.size;
+    ret.characters = res1;
+    return ret;
+}
 
 char* reverse(char* main) {
     char* res = malloc(strlen(main) * sizeof(char*));
