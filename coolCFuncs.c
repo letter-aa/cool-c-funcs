@@ -89,7 +89,55 @@ int* sort(int* array, int arrayLen, int* sizeOfResult) {
     if (sizeOfResult != NULL) {
         *sizeOfResult = j;
     }
+    free(arr);
     return res;
+}
+
+sortExRet sortEx(int* array, int arrayLen, int* sizeOfResult) {
+    int* arr = malloc(arrayLen * sizeof(int*));
+    memcpy(arr, array, arrayLen * sizeof(int*));
+    int* res = malloc(arrayLen * sizeof(int*));
+    int* res1 = malloc(arrayLen * sizeof(int*));
+    for (int i = 0; i < arrayLen; i++) res1[i] = i;
+    int ex1 = -1;
+    int j = 0;
+    while (arrayLen > 0) {
+        // set ex1 to -1 to set to arr[i]
+        ex1 = -1;
+        int f = 0;
+        for (int i = 0; i < arrayLen; i++) {
+            if (ex1 == -1 || arr[i] < ex1) {
+                ex1 = arr[i];
+                f = i;
+            }
+        }
+        //first get j and set res[j] to ex1 then increment j
+        res[j] = ex1;
+
+        int old = res1[j];
+        res1[j] = f + j;
+        res1[f + j] = old;
+
+
+        //shorten arr table so we skip already scanned numbers
+        for (int x = f; x < arrayLen - 1; x++) {
+            arr[x] = arr[x + 1];
+        }
+
+        //increment j
+        j++;
+
+        //subtract arrayLen so when we have scanned all numbers arrayLen will = 0 and while loop will end
+        arrayLen--;
+    }
+    if (sizeOfResult != NULL) {
+        *sizeOfResult = j;
+    }
+    sortExRet ret;
+    ret.sorted = res;
+    ret.prevPos = res1;
+    free(arr);
+    return ret;
 }
 
 char* input() {
@@ -149,6 +197,7 @@ frequency frequencies(char* string) {
     return ret;
 };
 
+/*
 //sort function but for frequency
 frequency sortFrequency(frequency freq) {
     int* freqs = freq.frequencies;
@@ -168,12 +217,14 @@ frequency sortFrequency(frequency freq) {
                 ex2 = chars[i];
             }
         }
-        //first get j and set res[j] to ex1 then increment j
+        //first get j and set res[j] to ex1
         res[j] = ex1;
+
+        //set res1[j++] to ex2
         res1[j++] = ex2;
 
-        //shorten arr table so we skip already scanned numbers
-        for (int i = 0; i < arrayLen; i++) { // go over arr table again to get ex1 position
+        //shorten chars and freqs table so we skip already scanned numbers
+        for (int i = 0; i < arrayLen; i++) { // go over chars and freqs table again to get ex1 position
             if (freqs[i] == ex1) {
                 for (int x = i; x < arrayLen - 1; x++) {
                     freqs[x] = freqs[x + 1];
@@ -189,13 +240,13 @@ frequency sortFrequency(frequency freq) {
         //subtract arrayLen so when we have scanned all numbers arrayLen will = 0 and while loop will end
         arrayLen--;
     }
-    //freq.size = j;
     frequency ret;
     ret.frequencies = res;
     ret.size = freq.size;
     ret.characters = res1;
     return ret;
 }
+*/
 
 char* reverse(char* main) {
     char* res = malloc(strlen(main) * sizeof(char*));
