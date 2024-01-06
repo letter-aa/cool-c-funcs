@@ -57,34 +57,38 @@ string getarch() {
 }
 
 int* sort(int* array, int arrayLen, int* sizeOfResult) {
-    int* arr = array;
+    int* arr = malloc(arrayLen * sizeof(int*));
+    memcpy(arr, array, arrayLen * sizeof(int*));
     int* res = malloc(arrayLen * sizeof(int*));
     int ex1 = -1;
     int j = 0;
     while (arrayLen > 0) {
         // set ex1 to -1 to set to arr[i]
-        ex1 = -1;
+        ex1 = arr[0];
+        int f = 0;
         for (int i = 0; i < arrayLen; i++) {
-            if (ex1 == -1 || arr[i] < ex1) {
+            if (arr[i] < ex1) {
                 ex1 = arr[i];
+                f = i;
             }
         }
         //first get j and set res[j] to ex1 then increment j
-        res[j++] = ex1;
+        res[j] = ex1;
 
         //shorten arr table so we skip already scanned numbers
-        for (int i = 0; i < arrayLen; i++) { // go over arr table again to get ex1 position
-            if (arr[i] == ex1) {
-                for (int x = i; x < arrayLen - 1; x++) {
-                    arr[x] = arr[x + 1];
-                }
-            }
+        for (int x = f; x < arrayLen - 1; x++) {
+            arr[x] = arr[x + 1];
         }
-        
+
+        //increment j
+        j++;
+
         //subtract arrayLen so when we have scanned all numbers arrayLen will = 0 and while loop will end
         arrayLen--;
     }
-    *sizeOfResult = j;
+    if (sizeOfResult != NULL) {
+        *sizeOfResult = j;
+    }
     return res;
 }
 
