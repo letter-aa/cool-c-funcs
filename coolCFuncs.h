@@ -10,22 +10,23 @@ typedef int(__cdecl* any)();
 typedef const char* string;
 
 typedef struct frequency {
-	int size;
-	char* characters;
-	int* frequencies;
+	char character;
+	int frequency;
 } frequency;
 
-typedef struct sortExRet {
-	int* sorted;
-	int* prevPos;
-} sortExRet;
+typedef struct frequencies {
+	int size;
+	frequency* freqs;
+} frequencies;
 
 string getarch();
+void swap(int* pFirst, int* pSecond);
+void swapf(frequency* pFirst, frequency* pSecond);
 int* sort(int* array, int arrayLen, int* sizeOfResult);
-sortExRet sortEx(int* array, int arrayLen, int* sizeOfResult);
+int* sort1(int* array, int arrayLen, int* sizeOfResult);
 char* input();
-frequency frequencies(char* string);
-//frequency sortFrequency(frequency freq);
+frequencies getfrequencies(char* string);
+void sortfrequencies(frequencies* pFreqs);
 char* reverse(char* main);
 char* substr(char* main, int start);
 char* substrEx(char* main, int start, int length);
