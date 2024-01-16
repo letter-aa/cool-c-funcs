@@ -56,7 +56,33 @@ string getarch() {
 #endif
 }
 
+void swap(int* pFirst, int* pSecond) {
+    int old = *pFirst;
+    *pFirst = *pSecond;
+    *pSecond = old;
+}
+
+void swapf(frequency* pFirst, frequency* pSecond) {
+    frequency old = *pFirst;
+    *pFirst = *pSecond;
+    *pSecond = old;
+}
+
 int* sort(int* array, int arrayLen, int* sizeOfResult) {
+    int* res = malloc(arrayLen * sizeof(int*));
+    memcpy(res, array, arrayLen * sizeof(int*));
+    for (int i = 0; i < arrayLen; i++) {
+        for (int j = 0; j < arrayLen; j++) {
+            if (array[j] < array[i]) {
+                swap(&res[j], &res[i]);
+            }
+        }
+    }
+    if (sizeOfResult != NULL) *sizeOfResult = arrayLen;
+    return res;
+}
+
+int* sort1(int* array, int arrayLen, int* sizeOfResult) {
     int* arr = malloc(arrayLen * sizeof(int*));
     memcpy(arr, array, arrayLen * sizeof(int*));
     int* res = malloc(arrayLen * sizeof(int*));
@@ -86,58 +112,9 @@ int* sort(int* array, int arrayLen, int* sizeOfResult) {
         //subtract arrayLen so when we have scanned all numbers arrayLen will = 0 and while loop will end
         arrayLen--;
     }
-    if (sizeOfResult != NULL) {
-        *sizeOfResult = j;
-    }
+    if (sizeOfResult != NULL) *sizeOfResult = j;
     free(arr);
     return res;
-}
-
-sortExRet sortEx(int* array, int arrayLen, int* sizeOfResult) {
-    int* arr = malloc(arrayLen * sizeof(int*));
-    memcpy(arr, array, arrayLen * sizeof(int*));
-    int* res = malloc(arrayLen * sizeof(int*));
-    int* res1 = malloc(arrayLen * sizeof(int*));
-    for (int i = 0; i < arrayLen; i++) res1[i] = i;
-    int ex1 = -1;
-    int j = 0;
-    while (arrayLen > 0) {
-        // set ex1 to -1 to set to arr[i]
-        ex1 = -1;
-        int f = 0;
-        for (int i = 0; i < arrayLen; i++) {
-            if (ex1 == -1 || arr[i] < ex1) {
-                ex1 = arr[i];
-                f = i;
-            }
-        }
-        //first get j and set res[j] to ex1 then increment j
-        res[j] = ex1;
-
-        int old = res1[j];
-        res1[j] = f + j;
-        res1[f + j] = old;
-
-
-        //shorten arr table so we skip already scanned numbers
-        for (int x = f; x < arrayLen - 1; x++) {
-            arr[x] = arr[x + 1];
-        }
-
-        //increment j
-        j++;
-
-        //subtract arrayLen so when we have scanned all numbers arrayLen will = 0 and while loop will end
-        arrayLen--;
-    }
-    if (sizeOfResult != NULL) {
-        *sizeOfResult = j;
-    }
-    sortExRet ret;
-    ret.sorted = res;
-    ret.prevPos = res1;
-    free(arr);
-    return ret;
 }
 
 char* input() {
@@ -159,34 +136,28 @@ char* input() {
     return input;
 }
 
+/*
 frequency frequencies(char* string) {
     int size = strlen(string); //size of input
     int* freq = malloc(size * sizeof(int*)); //num of frequencies
     char* str = malloc(size * sizeof(char*)); //characters associated with the number of frequencies in the freq array
-    int j = 0;
-    bool found = false;
-
+    int j = 0; bool found = false;
     for (int i = 0; i < size; i++) { //initialize both freq and str arrays
-        freq[i] = 0;
-        str[i] = 0;
+        freq[i] = 0; str[i] = 0;
     }
 
-    for (int i = 0; i < size; i++) {
-        //go through each character in str array every character in ipt array to check if it is already an element in the str array
+    for (int i = 0; i < size; i++) { //go through each character in str array every character in ipt array to check if it is already an element in the str array
         for (int x = 0; x < size; x++) {
             if (string[i] == str[x]) {
-                freq[x]++;
-                found = true;
+                freq[x]++; found = true;
                 break;
             }
-        }
-        //if character does not exist in str array, we will create it
+        } //if character does not exist in str array, we will create it
         if (!found) {
             str[j] = string[i];
             freq[j] = 1;
             j++;
-        }
-        //reset found to false so that we can repeat this process for each character
+        } //reset found to false so that we can repeat this process for each character
         found = false;
     }
     size = j;
@@ -195,58 +166,44 @@ frequency frequencies(char* string) {
     ret.size = size;
     ret.frequencies = freq;
     return ret;
-};
+};*/
 
-/*
-//sort function but for frequency
-frequency sortFrequency(frequency freq) {
-    int* freqs = freq.frequencies;
-    char* chars = freq.characters;
-    int arrayLen = freq.size;
-    int* res = malloc(arrayLen * sizeof(int*));
-    char* res1 = malloc(arrayLen * sizeof(char*));
-    int ex1 = -1;
-    char ex2 = 0;
-    int j = 0;
-    while (arrayLen > 0) {
-        // set ex1 to -1 to set to arr[i]
-        ex1 = -1;
-        for (int i = 0; i < arrayLen; i++) {
-            if (ex1 == -1 || freqs[i] < ex1) {
-                ex1 = freqs[i];
-                ex2 = chars[i];
+frequencies getfrequencies(char* string) {
+    int size = strlen(string);
+    frequencies res;
+    res.freqs = malloc(size * sizeof(frequency));
+    bool found = false;
+    int f = 0;
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            if (string[i] == res.freqs[j].character) {
+                res.freqs[j].frequency++;
+                found = true;
+                break;
             }
         }
-        //first get j and set res[j] to ex1
-        res[j] = ex1;
-
-        //set res1[j++] to ex2
-        res1[j++] = ex2;
-
-        //shorten chars and freqs table so we skip already scanned numbers
-        for (int i = 0; i < arrayLen; i++) { // go over chars and freqs table again to get ex1 position
-            if (freqs[i] == ex1) {
-                for (int x = i; x < arrayLen - 1; x++) {
-                    freqs[x] = freqs[x + 1];
-                }
-            }
-            if (chars[i] == ex2) {
-                for (int x = i; x < arrayLen - 1; x++) {
-                    chars[x] = chars[x + 1];
-                }
-            }
+        if (found == false) {
+            res.freqs[f].character = string[i];
+            res.freqs[f].frequency = 1;
+            f++;
         }
-
-        //subtract arrayLen so when we have scanned all numbers arrayLen will = 0 and while loop will end
-        arrayLen--;
+        found = false;
     }
-    frequency ret;
-    ret.frequencies = res;
-    ret.size = freq.size;
-    ret.characters = res1;
-    return ret;
+    res.size = f;
+    return res;
 }
-*/
+
+void sortfrequencies(frequencies* pFreqs) {
+    for (int i = 0; i < pFreqs->size; i++) {
+        for (int j = 0; j < pFreqs->size; j++) {
+            if (pFreqs->freqs[j].frequency < pFreqs->freqs[i].frequency) {
+                frequency old = pFreqs->freqs[j];
+                pFreqs->freqs[j] = pFreqs->freqs[i];
+                pFreqs->freqs[i] = old;
+            }
+        }
+    }
+}
 
 char* reverse(char* main) {
     char* res = malloc(strlen(main) * sizeof(char*));
