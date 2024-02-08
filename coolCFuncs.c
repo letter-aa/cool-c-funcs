@@ -631,6 +631,7 @@ Node* fton(frequency freq) { // frequency to node
 }
 
 Node build(frequencies freq) {
+    sortfrequencies(&freq);
     int j = 0;
     Node* priQuene = malloc(freq.size * sizeof(Node)); //priority quene
     /*
