@@ -2,12 +2,21 @@
 #define coolCFuncs
 #define FUNCTION(NAME, TYPE, ...) TYPE(*NAME)(__VA_ARGS__)
 #define ARRLEN(ARRAY) sizeof(ARRAY) / sizeof(ARRAY[0])
+#define newline printf("\n")
+#define DEBUG_NULL 0xcdcdcdcdcdcdcdcd
 
 #ifdef _WIN32
 typedef int(__cdecl* any)();
 #endif
 
 typedef const char* string;
+
+typedef struct Node {
+	char c; //characters
+	int f; //frequencies
+	struct Node* left;
+	struct Node* right;
+} Node;
 
 typedef struct frequency {
 	char character;
@@ -22,7 +31,7 @@ typedef struct frequencies {
 string getarch();
 void swap(int* pFirst, int* pSecond);
 void swapf(frequency* pFirst, frequency* pSecond);
-int* sort(int* array, int arrayLen, int* sizeOfResult);
+void sort(int* array, int arrayLen);
 int* sort1(int* array, int arrayLen, int* sizeOfResult);
 char* input();
 frequencies getfrequencies(char* string);
@@ -43,6 +52,17 @@ char* trim(char* main);
 char* itos(int i);
 int oldStoi(char* c);
 int stoi(char* c);
+
+//huffman algorithm functions
+void ppn(Node node, int nth);
+void ppq(Node* priQuene, int size);
+void asf(Node* pMain);
+void asl(Node* pMain, Node* l);
+void asr(Node* pMain, Node* r);
+void sortnodes(Node* nodes, int size);
+Node* newnode(char c, int f);
+Node* fton(frequency freq);
+Node build(frequencies freq);
 
 #else
 
