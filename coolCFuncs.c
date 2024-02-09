@@ -111,8 +111,7 @@ int* sort1(int* array, int arrayLen, int* sizeOfResult) {
 }
 
 char* input() {
-    char* input;
-    input = malloc(sizeof(char*));
+    char* input = malloc(sizeof(char*));
     char c = getchar();
     int j = 0;
     while (c != '\n') {
@@ -348,6 +347,35 @@ int find_last_not_of(char* main, char* findStr) {
     else {
         return -1;
     }
+}
+
+char* replace(char* main, char* toReplace, char* replaceWith, int nth) {
+    char* res = malloc(strlen(main) * sizeof(char*));
+    strcpy(res, main);
+    int f = findNth(res, toReplace, nth);
+    if (f != -1) {
+        char* ex = substrEx(res, 0, f);
+        char* ex1 = substr(res, f + strlen(toReplace));
+        strcat(ex, replaceWith);
+        strcat(ex, ex1);
+        res = _strdup(ex);
+    }
+    return res;
+}
+
+char* replaceall(char* main, char* toReplace, char* replaceWith) {
+    char* res = malloc(strlen(main) * sizeof(char*));
+    strcpy(res, main);
+    int f = find(res, toReplace);
+    while (f != -1) {
+        char* ex = substrEx(res, 0, f);
+        char* ex1 = substr(res, f + strlen(toReplace));
+        strcat(ex, replaceWith);
+        strcat(ex, ex1);
+        res = _strdup(ex);
+        f = findNth(res, toReplace, f + strlen(toReplace) + 1);
+    }
+    return res;
 }
 
 char* oldTrim(char* main) {
@@ -683,4 +711,58 @@ Node build(frequencies freq, bool type) {
     }
     sortnodes(priQuene, j, type);
     return priQuene[0];
+}
+
+int gethuffmancode(Node* tree, char c, char code[]) {
+    if (tree == NULL) {
+        code = substrEx(code, 0, strlen(code) - 1);
+        return NULL;
+    }
+
+    if (tree->c == c) {
+        code = substrEx(code, 0, strlen(code) - 1);
+        return 1;
+    }
+
+    char* oldc = _strdup(code); //oldCode
+    strcat(code, "0");
+    int left = gethuffmancode(tree->left, c, code);
+    if (left != NULL) return 1;
+
+    strcpy(code, oldc);
+    strcat(code, "1");
+    int right = gethuffmancode(tree->right, c, code);
+    return right != NULL;
+}
+
+/*
+Node pntn(Node* node) { //pointer node to node
+    Node new = *newnode(node->c, node->f);
+    asl(&new, node->left);
+    asr(&new, node->right);
+    return new;
+}
+Node* ntpn(Node node) { //node to pointer node
+    Node* new = newnode(node.c, node.f);
+    asl(new, node.left);
+    asr(new, node.right);
+    return new;
+}
+*/
+
+char* encrypt(char* text) {
+    frequencies freqs = getfrequencies(text);
+    Node tree = build(freqs, true);
+    char* res = malloc(strlen(text) * sizeof(char*)); // freqs.size * 
+    strcpy(res, "");
+    for (int i = 0; i < strlen(text); i++) {
+        char* code[256] = { '\0' };
+        int ghc = gethuffmancode(&tree, text[i], code);
+        //code = realloc(code, strlen(code) + 1);
+        if (ghc != NULL) {
+            strcat(res, code);
+            //res = realloc(str1, strlen(str1) + 1); // sizeof or strlen
+        }
+    }
+    return res;
 }
