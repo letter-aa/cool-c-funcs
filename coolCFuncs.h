@@ -59,10 +59,10 @@ void ppq(Node* priQuene, int size);
 void asf(Node* pMain);
 void asl(Node* pMain, Node* l);
 void asr(Node* pMain, Node* r);
-void sortnodes(Node* nodes, int size);
+void sortnodes(Node* nodes, int size, bool enabled);
 Node* newnode(char c, int f);
 Node* fton(frequency freq);
-Node build(frequencies freq);
+Node build(frequencies freq, bool type);
 
 #else
 
