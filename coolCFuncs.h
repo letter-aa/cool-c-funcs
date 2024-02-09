@@ -47,6 +47,8 @@ char** split(char* main, char* splitBy, int* sizeOfResult);
 int find_last_of(char* main, char* find);
 int find_first_not_of(char* main, char* find);
 int find_last_not_of(char* main, char* find);
+char* replace(char* main, char* toReplace, char* replaceWith, int nth);
+char* replaceall(char* main, char* toReplace, char* replaceWith);
 char* oldTrim(char* main);
 char* trim(char* main);
 char* itos(int i);
@@ -63,6 +65,8 @@ void sortnodes(Node* nodes, int size, bool enabled);
 Node* newnode(char c, int f);
 Node* fton(frequency freq);
 Node build(frequencies freq, bool type);
+int gethuffmancode(Node* tree, char c, char code[]);
+char* encrypt(char* text);
 
 #else
 
