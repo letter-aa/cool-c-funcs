@@ -605,10 +605,10 @@ void asr(Node* pMain, Node* r) {
     pMain->right = r;
 } //assign left & right
 
-void sortnodes(Node* nodes, int size) {
+void sortnodes(Node* nodes, int size, bool enable) {
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++) {
-            if (nodes[j].f < nodes[i].f) { // > if least to greatest, < if vice versa
+            if ((enable == true) ? nodes[j].f > nodes[i].f : nodes[j].f < nodes[i].f) { // > if least to greatest, < if vice versa
                 Node old = nodes[j];
                 nodes[j] = nodes[i];
                 nodes[i] = old;
@@ -630,7 +630,15 @@ Node* fton(frequency freq) { // frequency to node
     return newnode(freq.character, freq.frequency);
 }
 
-Node build(frequencies freq) {
+/* 
+type 0 (NOT RECOMMENDED):
+if there more than 4 nodes, it will turn the extra nodes to a small binary tree and set 
+that small tree as the right / left of the bigger tree(the other 4 nodes)
+
+type 1 (RECOMMENDED): 
+sets each node (not including leafs) to have usually an equal amount of children
+*/
+Node build(frequencies freq, bool type) {
     sortfrequencies(&freq);
     int j = 0;
     Node* priQuene = malloc(freq.size * sizeof(Node)); //priority quene
@@ -656,10 +664,8 @@ Node build(frequencies freq) {
     }
 
     while (j > 1) {
-        sortnodes(priQuene, j);
+        sortnodes(priQuene, j, type);
         Node* new = newnode('\0', 0);
-        ppn(priQuene[0], 0);
-        ppn(priQuene[1], 1);
         Node* ex = newnode(priQuene[0].c, priQuene[0].f);
         Node* ex1 = newnode(priQuene[1].c, priQuene[1].f);
         asl(ex, priQuene[0].left);
@@ -675,6 +681,6 @@ Node build(frequencies freq) {
         }
         j--;
     }
-    sortnodes(priQuene, j);
+    sortnodes(priQuene, j, type);
     return priQuene[0];
 }
