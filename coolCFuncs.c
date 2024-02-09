@@ -210,6 +210,9 @@ char* substr(char* main, int start) {
     if (start < 0) {
         start = 0;
     }
+    if (strlen(main) < start) {
+        return "";
+    }
     char* res = malloc(strlen(main) * sizeof(char*));
     for (int i = start; i <= strlen(main); i++) {
         res[i - start] = main[i];
@@ -221,6 +224,9 @@ char* substr(char* main, int start) {
 char* substrEx(char* main, int start, int length) {
     if (start < 0) {
         start = 0;
+    }
+    if (strlen(main) < start) {
+        return "";
     }
     if (length >= 0) {
         length = length + start;
