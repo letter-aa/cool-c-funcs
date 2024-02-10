@@ -756,6 +756,22 @@ Node* ntpn(Node node) { //node to pointer node
 }
 */
 
+char* treetostring(Node* tree, frequencies freqs) {
+    char* res = malloc(freqs.size * sizeof(char*));
+    strcpy(res, "");
+    for (int i = 0; i < freqs.size; i++) {
+        char code[256] = { '\0' };
+        frequency ex = freqs.freqs[i];
+        int ghc = gethuffmancode(tree, ex.character, code);
+        if (ghc != NULL) {
+            char str[2] = { ex.character, '\0'};
+            strcat(res, str);
+            strcat(res, code);
+        }
+    }
+    return res;
+}
+
 char* encrypt(char* text) {
     frequencies freqs = getfrequencies(text);
     Node tree = build(freqs, true);
