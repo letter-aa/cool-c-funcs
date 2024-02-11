@@ -68,6 +68,7 @@ Node build(frequencies freq, bool type);
 int gethuffmancode(Node* tree, char c, char code[]);
 char* treetostring(Node* tree, frequencies freqs);
 char* encrypt(char* text);
+char* decrypt(char* treestring, char* encoded);
 
 #else
 
