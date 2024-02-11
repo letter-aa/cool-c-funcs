@@ -319,7 +319,7 @@ char** split(char* main, char* splitBy, int* sizeOfResult) {
             j = j + 1;
         }
     }
-    *sizeOfResult = j;
+    if (sizeOfResult != NULL) *sizeOfResult = j;
     return res;
 }
 
@@ -787,4 +787,37 @@ char* encrypt(char* text) {
         }
     }
     return res;
+}
+
+char* decrypt(char* treestring, char* encoded) {
+    int i = 0;
+    int e = 1;
+    int z = 0;
+    int mallocSize = 0;
+    char* s1 = substrEx(treestring, z, 1);
+    while (z + 1 < strlen(treestring)) {
+        if (*s1 != '1' && *s1 != '0') {
+            mallocSize++;
+        }
+        s1 = substrEx(treestring, ++z, 1);
+    }
+    char* res = malloc(mallocSize + 1);
+    strcpy(res, "");
+    
+    char* s = substrEx(encoded, i, e);
+    int f = find(treestring, s);
+    char* decrypted = malloc(sizeof(char) + 1);
+    strcpy(decrypted, "");
+
+    while (f != -1) {
+        s = substrEx(encoded, 0, ++e);
+        f = find(treestring, s);
+    }
+
+    s = substrEx(encoded, i, --e);
+    f = find(treestring, s);
+    decrypted = substrEx(treestring, f - 1, f);
+    printf("%s", decrypted);
+    //printf("%s", decrypted);
+    return "";
 }
