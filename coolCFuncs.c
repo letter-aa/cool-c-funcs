@@ -664,12 +664,12 @@ Node* fton(frequency freq) { // frequency to node
     return newnode(freq.character, freq.frequency);
 }
 
-/* 
+/*
 type 0 (NOT RECOMMENDED):
-if there more than 4 nodes, it will turn the extra nodes to a small binary tree and set 
+if there more than 4 nodes, it will turn the extra nodes to a small binary tree and set
 that small tree as the right / left of the bigger tree(the other 4 nodes)
 
-type 1 (RECOMMENDED): 
+type 1 (RECOMMENDED):
 sets each node (not including leafs) to have usually an equal amount of children
 */
 Node build(frequencies freq, bool type) {
@@ -764,8 +764,7 @@ char* treetostring(Node* tree, frequencies freqs) {
         frequency ex = freqs.freqs[i];
         int ghc = gethuffmancode(tree, ex.character, code);
         if (ghc != NULL) {
-            char str[2] = { ex.character, '\0'};
-            strcat(res, str);
+            strncat(res, &ex.character, 1);
             strcat(res, code);
         }
     }
@@ -790,34 +789,34 @@ char* encrypt(char* text) {
 }
 
 char* decrypt(char* treestring, char* encoded) {
-    int i = 0;
+    //int i = 0;
     int e = 1;
-    int z = 0;
-    int mallocSize = 0;
-    char* s1 = substrEx(treestring, z, 1);
-    while (z + 1 < strlen(treestring)) {
-        if (*s1 != '1' && *s1 != '0') {
-            mallocSize++;
+    int sizeOfCodes = 0;
+    //int f = 0;
+    char* chars = malloc(strlen(treestring));
+    char** codes = malloc(strlen(treestring));
+    strcpy(chars, "");
+    codes[0] = treestring;
+    for (int i = 0; i < strlen(treestring) - 1; i++) {
+        if (treestring[i] != '1' && treestring[i] != '0') {
+            strncat(chars, &treestring[i], 1);
+            char** ex = split(codes[sizeOfCodes], (char[2]) { treestring[i], '\0' }, NULL);
+            if (strcmp(trim(ex[0]), " ") != 0) {
+                codes[sizeOfCodes] = ex[0];
+                codes[++sizeOfCodes] = ex[1];
+            }
+            else {
+                codes[sizeOfCodes] = ex[1];
+            }
+            free(ex);
         }
-        s1 = substrEx(treestring, ++z, 1);
+        //s1 = substrEx(treestring, ++z, 1);
     }
-    char* res = malloc(mallocSize + 1);
-    strcpy(res, "");
-    
-    char* s = substrEx(encoded, i, e);
-    int f = find(treestring, s);
-    char* decrypted = malloc(sizeof(char) + 1);
-    strcpy(decrypted, "");
+    sizeOfCodes++;
+    printf("%s", chars);
+    printf("\n%d", strlen(chars));
 
-    while (f != -1) {
-        s = substrEx(encoded, 0, ++e);
-        f = find(treestring, s);
+    for (int i = 0; i < sizeOfCodes; i++) {
+        printf("\n%c, %s", chars[i], codes[i]);
     }
-
-    s = substrEx(encoded, i, --e);
-    f = find(treestring, s);
-    decrypted = substrEx(treestring, f - 1, f);
-    printf("%s", decrypted);
-    //printf("%s", decrypted);
-    return "";
 }
