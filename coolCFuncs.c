@@ -795,7 +795,7 @@ char* decrypt(char* treestring, char* encoded) {
     int f = 0;
     char* res = malloc(sizeof(char)); // strlen(encoded) + 1
     char* chars = malloc(strlen(treestring));
-    char** codes = malloc(strlen(treestring));
+    char** codes = malloc(strlen(treestring) * sizeof(char*));
     strcpy(chars, "");
     strcpy(res, "");
     codes[0] = treestring;
