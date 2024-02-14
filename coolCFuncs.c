@@ -793,7 +793,7 @@ char* decrypt(char* treestring, char* encoded) {
     //int e = 1;
     int sizeOfCodes = 0;
     int f = 0;
-    char* res = malloc(strlen(encoded) + 1);
+    char* res = malloc(sizeof(char)); // strlen(encoded) + 1
     char* chars = malloc(strlen(treestring));
     char** codes = malloc(strlen(treestring));
     strcpy(chars, "");
@@ -820,6 +820,9 @@ char* decrypt(char* treestring, char* encoded) {
         for (int i = 0; i < sizeOfCodes; i++) {
             //printf("%s: %d,%s\n", codes[i], strlen(codes[i]), substrEx(encoded, f, strlen(codes[i])));
             if (strcmp(substrEx(encoded, f, strlen(codes[i])), codes[i]) == 0) {
+                char* old = _strdup(res);
+                res = realloc(res, strlen(res) + 1);
+                strcpy(res, old);
                 strncat(res, &chars[i], 1);
                 //res = replace(res, codes[i], (char[2]) { chars[i], '\0' }, f);
                 f = f + strlen(codes[i]);
