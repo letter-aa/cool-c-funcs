@@ -790,12 +790,14 @@ char* encrypt(char* text) {
 
 char* decrypt(char* treestring, char* encoded) {
     //int i = 0;
-    int e = 1;
+    //int e = 1;
     int sizeOfCodes = 0;
-    //int f = 0;
+    int f = 0;
+    char* res = malloc(strlen(encoded) + 1);
     char* chars = malloc(strlen(treestring));
     char** codes = malloc(strlen(treestring));
     strcpy(chars, "");
+    strcpy(res, "");
     codes[0] = treestring;
     for (int i = 0; i < strlen(treestring) - 1; i++) {
         if (treestring[i] != '1' && treestring[i] != '0') {
@@ -813,10 +815,20 @@ char* decrypt(char* treestring, char* encoded) {
         //s1 = substrEx(treestring, ++z, 1);
     }
     sizeOfCodes++;
-    printf("%s", chars);
-    printf("\n%d", strlen(chars));
-
-    for (int i = 0; i < sizeOfCodes; i++) {
-        printf("\n%c, %s", chars[i], codes[i]);
+    int sizeEx = 0;
+    while (f < strlen(encoded)) {
+        for (int i = 0; i < sizeOfCodes; i++) {
+            //printf("%s: %d,%s\n", codes[i], strlen(codes[i]), substrEx(encoded, f, strlen(codes[i])));
+            if (strcmp(substrEx(encoded, f, strlen(codes[i])), codes[i]) == 0) {
+                strncat(res, &chars[i], 1);
+                //res = replace(res, codes[i], (char[2]) { chars[i], '\0' }, f);
+                f = f + strlen(codes[i]);
+                break;
+            }
+        }
     }
+    //free(chars);
+    //free(codes);
+    // res = realloc(res, strlen(res) + 1);
+    return res;
 }
