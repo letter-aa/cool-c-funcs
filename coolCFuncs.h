@@ -5,6 +5,7 @@
 #define newline printf("\n")
 #define DEBUG_NULL 0xcdcdcdcdcdcdcdcd
 
+
 #ifdef _WIN32
 typedef int(__cdecl* any)();
 #endif
@@ -54,6 +55,10 @@ char* trim(char* main);
 char* itos(int i);
 int oldStoi(char* c);
 int stoi(char* c);
+int clen(int c);
+int stoc(char* str, bool enablewarnings);
+char* ctos(int mcl, bool enablewarnings);
+
 
 //huffman algorithm functions
 void ppn(Node node, int nth);
