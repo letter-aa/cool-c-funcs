@@ -602,6 +602,56 @@ int stoi(char* c) {
     return res;
 }
 
+int clen(int c) {
+    return (((c & 0xFF) != 0) + (((c >> 8) & 0xFF) != 0) + (((c >> 16) & 0xFF) != 0) + (((c >> 24) & 0xFF) != 0));
+}
+
+int stoc(char* str, bool enablewarnings) { // string to character
+    int size = strlen(str);
+    if (size > 0) {
+        int d = (int)str[0];
+        if (size > 4 && enablewarnings == true) {
+            printf("\n'str' is longer than the max number characters permitted in a multi-character literal\n");
+        }
+        for (int i = 1; i < ((size <= 4) ? size : 4); i++) {
+            d = d * 256 + str[i]; // (('B' * 256 + 'r') * 256 + 'u') * 256 + 'h')
+        }
+        return d;
+    }
+    else {
+        if (enablewarnings == true) {
+            printf("\n'str' is empty\n");
+        }
+    }
+    return '\0';
+}
+
+char* ctos(int mcl, bool enablewarnings) { // character to string
+    int size = clen(mcl);
+    int sizeEx = size * sizeof(char) + 1;
+    char* result = malloc(sizeEx);
+    
+    result[sizeEx - 1] = '\0';
+    result[sizeEx - 2] = mcl & 0xFF;
+
+    for (int i = sizeEx - 2; i >= 0; i--) {
+        int x = (sizeEx - 2) - i;
+        result[i] = (mcl >> 8 * x) & 0xFF;
+    }
+
+    /*
+    result[0] = (mcl >> 24) & 0xFF; // 1
+    result[1] = (mcl >> 16) & 0xFF; // 1 2
+    result[2] = (mcl >> 8) & 0xFF; // 1 2 3
+    result[3] = mcl & 0xFF; // 1 2 3 4
+    result[4] = '\0';
+    */
+    /*
+    char result[clen(mcl) * sizeof(char) + 1] = {(mcl >> 24) & 0xFF, (mcl >> 16) & 0xFF, (mcl >> 8) & 0xFF, mcl & 0xFF};
+    */
+    return result;
+}
+
 //huffman algorithm functions
 
 void ppn(Node node, int nth) {
