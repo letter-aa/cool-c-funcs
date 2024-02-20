@@ -806,18 +806,44 @@ Node* ntpn(Node node) { //node to pointer node
 }
 */
 
-char* treetostring(Node* tree, frequencies freqs) {
-    char* res = malloc(freqs.size * sizeof(char*));
-    strcpy(res, "");
+long* treetostring(Node* tree, frequencies freqs, int* pSize) {
+    long* res = malloc(freqs.size * sizeof(long*) + 1);
+    int size = 0;
     for (int i = 0; i < freqs.size; i++) {
         char code[256] = { '\0' };
         frequency ex = freqs.freqs[i];
         int ghc = gethuffmancode(tree, ex.character, code);
         if (ghc != NULL) {
-            strncat(res, &ex.character, 1);
-            strcat(res, code);
+            if (ex.character == '1') {
+                long one = '*1';
+                res[size++] = one;
+                //strncat(res, &one, 1);
+            }
+            else if (ex.character == '0') {
+                long zero = '*0';
+                res[size++] = zero;
+                //strncat(res, &zero, 1);
+            }
+            else {
+                res[size++] = (long)ex.character;
+                //strncat(res, &ex.character, 1);
+            }
+            if (strcmp(trim(code), " ") == 0) {
+                *code = '0';
+            }
+            for (int i = 0; i < strlen(code); i++) {
+                res[size++] = (long)code[i];
+            }
+            //strcat(res, code);
         }
     }
+    res[size] = '\0';
+    /*
+    for (int i = 0; i < size; i++) {
+        printf("%s\n", ctos(res[i],false));
+    }
+    */
+    if (pSize != NULL) *pSize = size;
     return res;
 }
 
@@ -830,6 +856,9 @@ char* encrypt(char* text) {
         char* code[256] = { '\0' };
         int ghc = gethuffmancode(&tree, text[i], code);
         //code = realloc(code, strlen(code) + 1);
+        if (strcmp(trim(code), " ") == 0) {
+            *code = '0';
+        }
         if (ghc != NULL) {
             strcat(res, code);
             //res = realloc(str1, strlen(str1) + 1); // sizeof or strlen
@@ -838,21 +867,28 @@ char* encrypt(char* text) {
     return res;
 }
 
-char* decrypt(char* treestring, char* encoded) {
+char* decrypt(long* treestring, char* encoded, int treestringSize) {
     //int i = 0;
     //int e = 1;
     int sizeOfCodes = 0;
     int f = 0;
     char* res = malloc(sizeof(char)); // strlen(encoded) + 1
-    char* chars = malloc(strlen(treestring));
-    char** codes = malloc(strlen(treestring) * sizeof(char*));
+    char* chars = malloc(treestringSize);
+    char** codes = malloc(treestringSize * sizeof(char*));
     strcpy(chars, "");
     strcpy(res, "");
-    codes[0] = treestring;
-    for (int i = 0; i < strlen(treestring) - 1; i++) {
-        if (treestring[i] != '1' && treestring[i] != '0') {
-            strncat(chars, &treestring[i], 1);
-            char** ex = split(codes[sizeOfCodes], (char[2]) { treestring[i], '\0' }, NULL);
+    codes[0] = malloc(treestringSize);
+    strcpy(codes[0], "");
+    for (int i = 0; i < treestringSize; i++) {
+        strcat(codes[0], ctos(treestring[i], false));
+    }
+    for (int i = 0; i < treestringSize; i++) {
+        if (strcmp(ctos(treestring[i], false), "1") != 0 && strcmp(ctos(treestring[i],false), "0") != 0) {
+            //printf("%s\n", ctos((char)treestring[i], false));
+            strcat(chars, ctos((char)treestring[i], false));
+            //printf("csoc: %s\n", codes[sizeOfCodes]);
+            //printf("ctosct: %s\n", ctos((char)treestring[i], false));
+            char** ex = split(codes[sizeOfCodes], ctos(treestring[i], false), NULL);
             if (strcmp(trim(ex[0]), " ") != 0) {
                 codes[sizeOfCodes] = ex[0];
                 codes[++sizeOfCodes] = ex[1];
