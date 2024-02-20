@@ -783,9 +783,13 @@ int gethuffmancode(Node* tree, char c, char code[]) {
     char* oldc = _strdup(code); //oldCode
     strcat(code, "0");
     int left = gethuffmancode(tree->left, c, code);
-    if (left != NULL) return 1;
+    if (left != NULL) {
+        free(oldc);
+        return 1;
+    }
 
     strcpy(code, oldc);
+    free(oldc);
     strcat(code, "1");
     int right = gethuffmancode(tree->right, c, code);
     return right != NULL;
@@ -853,7 +857,7 @@ char* encrypt(char* text) {
     char* res = malloc(strlen(text) * sizeof(char*)); // freqs.size * 
     strcpy(res, "");
     for (int i = 0; i < strlen(text); i++) {
-        char* code[256] = { '\0' };
+        char code[256] = { '\0' };
         int ghc = gethuffmancode(&tree, text[i], code);
         //code = realloc(code, strlen(code) + 1);
         if (strcmp(trim(code), " ") == 0) {
