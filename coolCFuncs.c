@@ -274,7 +274,7 @@ char** splitByByte(char* main, int splitBy, int* sizeOfResult) {
         res[j] = substrEx(main, i, intEx);
         j++;
     }
-    *sizeOfResult = j;
+    if (sizeOfResult != NULL) *sizeOfResult = j;
     return res;
 }
 
@@ -282,7 +282,7 @@ int numofstr(char* main, char* lookfor) {
     int sizeOfResult = 0;
     char** res = splitByByte(main, strlen(lookfor), &sizeOfResult);
     int inc = 0;
-    for (int i = 0; i < ARRLEN(res); i++) {
+    for (int i = 0; i < sizeOfResult; i++) {
         if (strcmp(res[i], lookfor) == 0) {
             inc = inc + 1;
         }
@@ -326,33 +326,24 @@ char** split(char* main, char* splitBy, int* sizeOfResult) {
 int find_last_of(char* main, char* findStr) {
     char* rmain = reverse(main);
     char* rfind = reverse(findStr);
-    if (numofstr(rmain, rfind) > 0) {
-        return strlen(main) - find(rmain, rfind) - 1;
-    }
-    return -1;
+    return ((numofstr(rmain, rfind) > 0) ? strlen(main) - find(rmain, rfind) - 1 : -1);
 }
 
 int find_first_not_of(char* main, char* findStr) {
-    if (strcmp(main, findStr) == 0) {
-        return -1;
-    }
+    int res = -1;
     for (int i = 0; i < strlen(main); i++) {
         if (strcmp(substrEx(main, i, strlen(findStr)), findStr) != 0) {
-            return i;
+            res = i;
+            break;
         }
     }
-    return -1;
+    return ((strcmp(main, findStr) != 0) ? res : -1);
 }
 
 int find_last_not_of(char* main, char* findStr) {
     char* rmain = reverse(main);
     char* rfind = reverse(findStr);
-    if (strcmp(main, findStr) != 0) {
-        return strlen(main) - find_first_not_of(rmain, rfind) - 1;
-    }
-    else {
-        return -1;
-    }
+    return ((strcmp(main, findStr) != 0) ? strlen(main) - find_first_not_of(rmain, rfind) - 1 : -1);
 }
 
 char* replace(char* main, char* toReplace, char* replaceWith, int nth) {
@@ -630,7 +621,7 @@ char* ctos(int mcl, bool enablewarnings) { // character to string
     int size = clen(mcl);
     int sizeEx = size * sizeof(char) + 1;
     char* result = malloc(sizeEx);
-    
+
     result[sizeEx - 1] = '\0';
     result[sizeEx - 2] = mcl & 0xFF;
 
@@ -783,13 +774,9 @@ int gethuffmancode(Node* tree, char c, char code[]) {
     char* oldc = _strdup(code); //oldCode
     strcat(code, "0");
     int left = gethuffmancode(tree->left, c, code);
-    if (left != NULL) {
-        free(oldc);
-        return 1;
-    }
+    if (left != NULL) return 1;
 
     strcpy(code, oldc);
-    free(oldc);
     strcat(code, "1");
     int right = gethuffmancode(tree->right, c, code);
     return right != NULL;
@@ -810,44 +797,18 @@ Node* ntpn(Node node) { //node to pointer node
 }
 */
 
-long* treetostring(Node* tree, frequencies freqs, int* pSize) {
-    long* res = malloc(freqs.size * sizeof(long*) + 1);
-    int size = 0;
+char* treetostring(Node* tree, frequencies freqs) {
+    char* res = malloc(freqs.size * sizeof(char*));
+    strcpy(res, "");
     for (int i = 0; i < freqs.size; i++) {
         char code[256] = { '\0' };
         frequency ex = freqs.freqs[i];
         int ghc = gethuffmancode(tree, ex.character, code);
         if (ghc != NULL) {
-            if (ex.character == '1') {
-                long one = '*1';
-                res[size++] = one;
-                //strncat(res, &one, 1);
-            }
-            else if (ex.character == '0') {
-                long zero = '*0';
-                res[size++] = zero;
-                //strncat(res, &zero, 1);
-            }
-            else {
-                res[size++] = (long)ex.character;
-                //strncat(res, &ex.character, 1);
-            }
-            if (strcmp(trim(code), " ") == 0) {
-                *code = '0';
-            }
-            for (int i = 0; i < strlen(code); i++) {
-                res[size++] = (long)code[i];
-            }
-            //strcat(res, code);
+            strncat(res, &ex.character, 1);
+            strcat(res, code);
         }
     }
-    res[size] = '\0';
-    /*
-    for (int i = 0; i < size; i++) {
-        printf("%s\n", ctos(res[i],false));
-    }
-    */
-    if (pSize != NULL) *pSize = size;
     return res;
 }
 
@@ -860,9 +821,6 @@ char* encrypt(char* text) {
         char code[256] = { '\0' };
         int ghc = gethuffmancode(&tree, text[i], code);
         //code = realloc(code, strlen(code) + 1);
-        if (strcmp(trim(code), " ") == 0) {
-            *code = '0';
-        }
         if (ghc != NULL) {
             strcat(res, code);
             //res = realloc(str1, strlen(str1) + 1); // sizeof or strlen
@@ -871,28 +829,21 @@ char* encrypt(char* text) {
     return res;
 }
 
-char* decrypt(long* treestring, char* encoded, int treestringSize) {
+char* decrypt(char* treestring, char* encoded) {
     //int i = 0;
     //int e = 1;
     int sizeOfCodes = 0;
     int f = 0;
     char* res = malloc(sizeof(char)); // strlen(encoded) + 1
-    char* chars = malloc(treestringSize);
-    char** codes = malloc(treestringSize * sizeof(char*));
+    char* chars = malloc(strlen(treestring));
+    char** codes = malloc(strlen(treestring) * sizeof(char*));
     strcpy(chars, "");
     strcpy(res, "");
-    codes[0] = malloc(treestringSize);
-    strcpy(codes[0], "");
-    for (int i = 0; i < treestringSize; i++) {
-        strcat(codes[0], ctos(treestring[i], false));
-    }
-    for (int i = 0; i < treestringSize; i++) {
-        if (strcmp(ctos(treestring[i], false), "1") != 0 && strcmp(ctos(treestring[i],false), "0") != 0) {
-            //printf("%s\n", ctos((char)treestring[i], false));
-            strcat(chars, ctos((char)treestring[i], false));
-            //printf("csoc: %s\n", codes[sizeOfCodes]);
-            //printf("ctosct: %s\n", ctos((char)treestring[i], false));
-            char** ex = split(codes[sizeOfCodes], ctos(treestring[i], false), NULL);
+    codes[0] = treestring;
+    for (int i = 0; i < strlen(treestring) - 1; i++) {
+        if (treestring[i] != '1' && treestring[i] != '0') {
+            strncat(chars, &treestring[i], 1);
+            char** ex = split(codes[sizeOfCodes], (char[2]) { treestring[i], '\0' }, NULL);
             if (strcmp(trim(ex[0]), " ") != 0) {
                 codes[sizeOfCodes] = ex[0];
                 codes[++sizeOfCodes] = ex[1];
