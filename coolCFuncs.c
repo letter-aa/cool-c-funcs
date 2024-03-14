@@ -805,7 +805,12 @@ char* treetostring(Node* tree, frequencies freqs) {
         frequency ex = freqs.freqs[i];
         int ghc = gethuffmancode(tree, ex.character, code);
         if (ghc != NULL) {
-            strncat(res, &ex.character, 1);
+            char* character = malloc(3 * sizeof(char*));
+            strcpy(character, ctos(ex.character, false));
+            if (ex.character == '1' || ex.character == '0') {
+                strcpy(character, (char[3]){'"', ex.character, '"'});
+            }
+            strcat(res, character);
             strcat(res, code);
         }
     }
@@ -842,14 +847,23 @@ char* decrypt(char* treestring, char* encoded) {
     codes[0] = treestring;
     for (int i = 0; i < strlen(treestring) - 1; i++) {
         if (treestring[i] != '1' && treestring[i] != '0') {
-            strncat(chars, &treestring[i], 1);
-            char** ex = split(codes[sizeOfCodes], (char[2]) { treestring[i], '\0' }, NULL);
+            char character = treestring[i];
+            bool isBinaryNumber = false;
+            if (strcmp(substrEx(treestring, i, 3), "\"1\"") == 0 || strcmp(substrEx(treestring, i, 3), "\"0\"") == 0) {
+                character = treestring[i + 1];
+                isBinaryNumber = true;
+            }
+            strncat(chars, &character, 1);
+            char** ex = split(codes[sizeOfCodes], (isBinaryNumber) ? substrEx(treestring, i, 3) : ctos(character, false), NULL); // (char[2]) { character, '\0' }
             if (strcmp(trim(ex[0]), " ") != 0) {
                 codes[sizeOfCodes] = ex[0];
                 codes[++sizeOfCodes] = ex[1];
             }
             else {
                 codes[sizeOfCodes] = ex[1];
+            }
+            if (isBinaryNumber) {
+                i += 3;
             }
             free(ex);
         }
